@@ -1,0 +1,56 @@
+package sevdotdev.dao.stats
+
+import com.google.gson.annotations.SerializedName
+import org.jetbrains.exposed.dao.id.UUIDTable
+
+
+object StatsTable : UUIDTable() {
+    val playerId = varchar("playerId", 10)
+    val matchId = uuid("matchId")
+    @SerializedName("assists")
+    val assists = double("assists")
+    @SerializedName("blocks")
+    val blocks = double("blocks")
+    @SerializedName("conceded_goals")
+    val concededGoals = double("conceded_goals")
+    @SerializedName("contributed_goals")
+    val contributedGoals = double("contributed_goals")
+    @SerializedName("faceoffs_lost")
+    val faceoffsLost = double("faceoffs_lost")
+    @SerializedName("faceoffs_won")
+    val faceoffsWon = double("faceoffs_won")
+    @SerializedName("game_winning_goals")
+    val gameWinningGoals = double("game_winning_goals")
+    @SerializedName("games_played")
+    val gamesPlayed = double("games_played")
+    @SerializedName("goals")
+    val goals = double("goals")
+    @SerializedName("losses")
+    val losses = double("losses")
+    @SerializedName("passes")
+    val passes = double("passes")
+    @SerializedName("possession_time_sec")
+    val possessionTimeSec = double("possession_time_sec")
+    @SerializedName("post_hits")
+    val postHits = double("post_hits")
+    @SerializedName("primary_assists")
+    val primaryAssists = double("primary_assists")
+    @SerializedName("saves")
+    val saves = double("saves")
+    @SerializedName("score")
+    val score = double("score")
+    @SerializedName("shots")
+    val shots = double("shots")
+    @SerializedName("shutouts")
+    val shutouts = double("shutouts")
+    @SerializedName("shutouts_against")
+    val shutoutsAgainst = double("shutouts_against")
+    @SerializedName("takeaways")
+    val takeaways = double("takeaways")
+    @SerializedName("turnovers")
+    val turnovers = double("turnovers")
+    @SerializedName("wins")
+    val wins = double("wins")
+}
+
+
