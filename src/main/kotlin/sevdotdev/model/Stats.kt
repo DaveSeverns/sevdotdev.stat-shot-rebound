@@ -2,6 +2,7 @@ package sevdotdev.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.util.UUID
 
 data class Stats(
     @SerializedName("assists")
@@ -47,5 +48,13 @@ data class Stats(
     @SerializedName("turnovers")
     val turnovers: Double = 0.0,
     @SerializedName("wins")
-    val wins: Double = 0.0
-)
+    val wins: Double = 0.0,
+    @SerializedName("player_id")
+    val playerId: String? = null,
+    @SerializedName("match_id")
+    val matchId: UUID? = null
+) {
+    fun associateIds(playerId: String, matchId: UUID): Stats {
+        return this.copy(playerId = playerId, matchId = matchId)
+    }
+}

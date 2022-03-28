@@ -1,10 +1,7 @@
 package sevdotdev.dao.matches
 
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import sevdotdev.dao.ExposedDao
 import sevdotdev.dao.players.PlayerTable
@@ -15,13 +12,13 @@ import java.util.*
 
 class MatchDao(
     database: Database,
-    val statsDao: StatsDao = StatsDao(database)
 ) : ExposedDao<Match, UUID, UUIDTable>(database) {
     override val table: MatchTable
         get() = MatchTable
-    override fun create(entity: Match, id: UUID?)  = transaction(database) {
+
+    override fun create(entity: Match, id: UUID?) = transaction(database) {
         val resultMatchId = table.insertAndGetId {
-            it[arena]  = entity.arena
+            it[arena] = entity.arena
             it[winner] = entity.winner
             it[homeScore] = entity.score?.home
             it[awayScore] = entity.score?.away
@@ -30,33 +27,43 @@ class MatchDao(
             it[periodsEnabled] = entity.periodsEnabled
             it[type] = entity.type
         }
-        entity.players?.forEach { activePlayer ->
-            val resultPlayerId = PlayerTable.insertAndGetId {
-                it[gameUserId] = activePlayer.gameUserId ?: ""
-                it[username] = activePlayer.username
-            }
+//        entity.players?.forEach { activePlayer ->
+//            val resultPlayerId = PlayerTable.insertAndGetId {
+//                it[gameUserId] = activePlayer.gameUserId ?: ""
+//                it[username] = activePlayer.username
+//            }
+//
+//            PlayerInMatchTable.insert {
+//                it[matchId] = resultMatchId.value
+//                it[playerId] = resultPlayerId.value
+//                it[team] = activePlayer.team
+//            }
+//
+//            statsDao.createWithMetaData(
+//                activePlayer.stats!!,
+//                resultPlayerId.value,
+//                resultMatchId.value
+//            )
+//
+//        }
+        resultMatchId.value
+    }
 
-            PlayerInMatchTable.insert {
-                it[matchId] = resultMatchId.value
-                it[playerId] = resultPlayerId.value
-                it[team] = activePlayer.team
-            }
-
-            statsDao.createWithMetaData(activePlayer.stats!!,
-            resultPlayerId.value,
-            resultMatchId.value)
-
+    override fun delete(id: UUID) = transaction(database) {
+        table.deleteWhere {
+            table.id eq id
         }
-        Unit
+        true
     }
 
-    override fun delete(id: UUID) {
-
+    override fun get(id: UUID): Match? = transaction(database) {
+        table.select {
+            table.id eq id
+        }.map {
+            rowToObject(it)
+        }.singleOrNull()
     }
 
-    override fun get(id: UUID): Match? {
-       return null
-    }
 
     override fun rowToObject(row: ResultRow): Match {
         return Match(

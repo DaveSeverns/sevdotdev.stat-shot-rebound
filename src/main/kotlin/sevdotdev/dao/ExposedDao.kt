@@ -14,7 +14,8 @@ abstract class ExposedDao<E, I, Tbl: Table>(protected val database: Database) : 
 
     override fun getAll(): List<E> = transaction(database) {
         table.selectAll().map {
-            rowToObject(resultRow = it)
+            rowToObject(row = it)
         }
     }
 }
+

@@ -15,7 +15,7 @@ data class Match(
     @SerializedName("periods_enabled")
     val periodsEnabled: String?,
     @SerializedName("players")
-    val players: List<Player>?,
+    val players: List<Player?>?,
     @SerializedName("score")
     val score: Score?,
     @SerializedName("type")

@@ -8,23 +8,18 @@ import sevdotdev.model.Player
 class PlayerTableDao(database: Database): ExposedDao<Player, String, PlayerTable>(database) {
     override val table: PlayerTable
         get() = PlayerTable
-    override fun create(entity: Player, id: String?) {
-        TODO("Not yet implemented")
+    override fun create(entity: Player, id: String?) = transaction(database){
+        table.insert {
+            it[table.gameUserId] = entity.gameUserId!!
+            it[table.username] = entity.username
+        }
     }
 
-    override fun delete(id: String) {
+    override fun delete(id: String) = transaction(database) {
         table.deleteWhere {
             PlayerTable.id eq id
         }
-        val function = table.select{
-            table.id eq id
-        }.map {
-            rowToObject(it)
-        }.singleOrNull()
-    }
-
-    private fun passFunction(function: List<Player>) {
-
+        true
     }
 
     override fun get(id: String): Player? = transaction(database) {
@@ -37,8 +32,13 @@ class PlayerTableDao(database: Database): ExposedDao<Player, String, PlayerTable
 
 
 
-    override fun rowToObject(resultRow: ResultRow): Player {
-        TODO("Not yet implemented")
+    override fun rowToObject(row: ResultRow): Player {
+        return Player(
+            gameUserId = row[table.gameUserId].value,
+            username = row[table.username],
+            stats = null,
+            team = null
+        )
     }
 
     override fun close() {

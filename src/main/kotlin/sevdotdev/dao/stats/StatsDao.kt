@@ -2,6 +2,7 @@ package sevdotdev.dao.stats
 
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import sevdotdev.dao.ExposedDao
 import sevdotdev.model.Stats
@@ -14,6 +15,8 @@ class StatsDao(database: Database) : ExposedDao<Stats, UUID, StatsTable>(databas
 
     override fun create(stats: Stats, id: UUID?) = transaction(database) {
         table.insert {
+            it[StatsTable.playerId] = stats.playerId
+            it[StatsTable.matchId] = stats.matchId
             it[StatsTable.assists] = stats.assists
             it[StatsTable.blocks] = stats.blocks
             it[StatsTable.concededGoals] = stats.concededGoals
@@ -75,12 +78,13 @@ class StatsDao(database: Database) : ExposedDao<Stats, UUID, StatsTable>(databas
         table.deleteWhere {
             StatsTable.id eq id
         }
-        Unit
+        true
     }
 
     override fun get(id: UUID): Stats? = transaction(database) {
+        val exp = StatsTable.id eq id
         table.select {
-            StatsTable.id eq id
+            exp
         }.map {
             rowToObject(row = it)
         }.singleOrNull()
@@ -115,4 +119,8 @@ class StatsDao(database: Database) : ExposedDao<Stats, UUID, StatsTable>(databas
             turnovers = row[StatsTable.turnovers],
             wins = row[StatsTable.wins],
         )
+
+    fun query(transaction: () -> Stats?): Stats? = transaction(database) {
+        transaction.invoke()
+    }
 }

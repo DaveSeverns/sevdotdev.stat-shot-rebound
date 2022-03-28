@@ -9,8 +9,8 @@ import sevdotdev.model.Stats
  * @param Identifier way to uniquely identify each row in the table
  */
 interface IDao<Entity, Identifier> : Closeable {
-    fun create(entity: Entity, id: Identifier? = null)
-    fun delete(id: Identifier)
+    fun create(entity: Entity, id: Identifier? = null): Any?
+    fun delete(id: Identifier): Boolean
     fun get(id: Identifier): Entity?
     fun getAll(): List<Entity>
 }

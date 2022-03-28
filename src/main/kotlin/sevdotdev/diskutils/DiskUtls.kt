@@ -2,12 +2,14 @@ package sevdotdev.diskutils
 
 import com.google.gson.Gson
 import io.ktor.application.*
+import org.h2.engine.Database
 import sevdotdev.dao.stats.StatsDao
 import sevdotdev.model.Match
+import sevdotdev.repository.StatShotDataRepository
 import java.io.File
 import java.util.*
 
-fun Application.readFromDisk(dao: StatsDao, directoryPath: String) {
+fun Application.readFromDisk(directoryPath: String, repository: StatShotDataRepository) {
     val games = mutableListOf<Match>()
     val gson = Gson()
     val dir = File(directoryPath)
@@ -16,22 +18,17 @@ fun Application.readFromDisk(dao: StatsDao, directoryPath: String) {
             val jsonString = file.bufferedReader().use {
                 it.readText()
             }
-            games.add(gson.fromJson(jsonString, Match::class.java))
+            val gameToAdd = try {
+                gson.fromJson(jsonString, Match::class.java)
+            } catch (e: Exception) {
+                null
+            }
+            gameToAdd?.let {
+                games.add(gameToAdd)
+            }
             println(file)
         }
 
     }
-    games.forEach {
-        val playerId = "5036"
-        it.players?.let { players ->
-            val playerToWatch = players.first { player ->
-                player.gameUserId == playerId
-            }
-            playerToWatch?.stats?.let { stats ->
-                dao.create(stats, UUID.randomUUID())
-            }
-
-        }
-
-    }
+    repository.saveMatches(games)
 }

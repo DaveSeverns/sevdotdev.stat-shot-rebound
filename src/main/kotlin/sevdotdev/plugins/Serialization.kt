@@ -7,8 +7,9 @@ import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import sevdotdev.dao.stats.StatsDao
+import sevdotdev.repository.StatShotDataRepository
 
-fun Application.configureSerialization(dao: StatsDao) {
+fun Application.configureSerialization(repository: StatShotDataRepository) {
     install(ContentNegotiation) {
         gson {
             }
@@ -16,8 +17,8 @@ fun Application.configureSerialization(dao: StatsDao) {
     }
 
     routing {
-        get("/all-stats") {
-            call.respond(mapOf("stats" to dao.getAll()))
+        get("/all-matches") {
+            call.respond(mapOf("matches" to repository.readMatches()))
         }
         get("/json/gson") {
                 call.respond(mapOf("hello" to "world"))

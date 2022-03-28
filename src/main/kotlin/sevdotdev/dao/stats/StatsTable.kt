@@ -5,8 +5,8 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 
 
 object StatsTable : UUIDTable() {
-    val playerId = varchar("playerId", 10)
-    val matchId = uuid("matchId")
+    val playerId = text("playerId").nullable()
+    val matchId = uuid("matchId").nullable()
     @SerializedName("assists")
     val assists = double("assists")
     @SerializedName("blocks")
