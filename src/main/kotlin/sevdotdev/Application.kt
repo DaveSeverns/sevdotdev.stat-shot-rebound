@@ -13,7 +13,7 @@ import sevdotdev.plugins.configureSerialization
 import sevdotdev.repository.StatShotDataRepository
 
 fun main(args: Array<String>) {
-    embeddedServer(Netty, port = 5036, host = "0.0.0.0") {
+    embeddedServer(Netty, port = 5036) {
         val database = Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;", driver = "org.h2.Driver")
         val statsDao = StatsDao(database)
 
