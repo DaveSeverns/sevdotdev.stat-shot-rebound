@@ -43,5 +43,5 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 }
 
-task stage(dependsOn: ['installDist'])
+task stage(dependsOn: ['clean','installDist'])
 build.mustRunAfter clean
