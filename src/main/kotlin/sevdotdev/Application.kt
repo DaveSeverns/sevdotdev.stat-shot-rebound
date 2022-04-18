@@ -1,5 +1,6 @@
 package sevdotdev
 
+import ch.qos.logback.core.util.SystemInfo
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.jetbrains.exposed.sql.Database
@@ -13,7 +14,7 @@ import sevdotdev.plugins.configureSerialization
 import sevdotdev.repository.StatShotDataRepository
 
 fun main(args: Array<String>) {
-    embeddedServer(Netty, port = 5036) {
+    embeddedServer(Netty, 0) {
         val database = Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;", driver = "org.h2.Driver")
         val statsDao = StatsDao(database)
 
