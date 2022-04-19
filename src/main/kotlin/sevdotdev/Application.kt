@@ -41,7 +41,7 @@ fun getDbUrl(envUrl: String?): String {
 
         val username: String = dbUri.userInfo.split(":")[0]
         val password: String = dbUri.userInfo.split(":")[1]
-        "jdbc:postgresql://" + dbUri.host + ':' + dbUri.port + dbUri.path
+        "jdbc:postgresql://" + dbUri.host + ':' + dbUri.port + dbUri.path + "?user=$username&password=$password"
     } else DEFAULT_DB_URL
 }
 
