@@ -45,7 +45,7 @@ fun getDbUrl(envUrl: String?): String {
                 dbUri.host +
                 ':' + dbUri.port +
                 dbUri.path +
-                "?user=$username&password=$password&ssl=true"
+                "?sslmode=require&user=$username&password=$password"
     } else DEFAULT_DB_URL
 }
 
