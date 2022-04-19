@@ -1,6 +1,7 @@
 package sevdotdev.repository
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import sevdotdev.dao.anyAs
 import sevdotdev.dao.matches.MatchDao
@@ -53,7 +54,7 @@ class StatShotDataRepository(
                 playersInMatch.forEach { pIM ->
                     val stats = statsDao.query {
                         StatsTable.select {
-                            StatsTable.playerId eq pIM.playerId
+                            (StatsTable.playerId eq pIM.playerId) and (StatsTable.matchId eq pIM.matchId)
                         }.map {
                             statsDao.rowToObject(it)
                         }.singleOrNull()
