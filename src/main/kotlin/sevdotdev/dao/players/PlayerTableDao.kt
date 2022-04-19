@@ -9,10 +9,14 @@ class PlayerTableDao(database: Database): ExposedDao<Player, String, PlayerTable
     override val table: PlayerTable
         get() = PlayerTable
     override fun create(entity: Player, id: String?) = transaction(database){
-        table.insert {
-            it[table.gameUserId] = entity.gameUserId!!
-            it[table.username] = entity.username
+        entity.gameUserId?.let {
+            if (get(it) != null) return@transaction
+            table.insert {
+                it[table.gameUserId] = entity.gameUserId
+                it[table.username] = entity.username
+            }
         }
+
     }
 
     override fun delete(id: String) = transaction(database) {

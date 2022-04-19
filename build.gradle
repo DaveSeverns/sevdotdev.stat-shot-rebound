@@ -38,7 +38,7 @@ dependencies {
     }
 
 
-    implementation ("com.h2database:h2:1.4.191")
+    implementation ('com.h2database:h2:2.1.210')
 
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
