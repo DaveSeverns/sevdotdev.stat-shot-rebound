@@ -49,5 +49,13 @@ class PlayerInMatchDao(database: Database) : ExposedDao<PlayerInMatchDto, UUID, 
         }
     }
 
+    fun getByPlayerId(playerId: String): List<PlayerInMatchDto> = transaction(database) {
+        table.select {
+            table.playerId eq playerId
+        }.map {
+            rowToObject(it)
+        }
+    }
+
 
 }

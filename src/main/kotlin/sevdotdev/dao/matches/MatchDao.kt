@@ -27,25 +27,6 @@ class MatchDao(
             it[periodsEnabled] = entity.periodsEnabled
             it[type] = entity.type
         }
-//        entity.players?.forEach { activePlayer ->
-//            val resultPlayerId = PlayerTable.insertAndGetId {
-//                it[gameUserId] = activePlayer.gameUserId ?: ""
-//                it[username] = activePlayer.username
-//            }
-//
-//            PlayerInMatchTable.insert {
-//                it[matchId] = resultMatchId.value
-//                it[playerId] = resultPlayerId.value
-//                it[team] = activePlayer.team
-//            }
-//
-//            statsDao.createWithMetaData(
-//                activePlayer.stats!!,
-//                resultPlayerId.value,
-//                resultMatchId.value
-//            )
-//
-//        }
         resultMatchId.value
     }
 

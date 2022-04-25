@@ -1,6 +1,6 @@
 package sevdotdev.repository
 
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import jdk.jfr.internal.LogLevel
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import sevdotdev.dao.anyAs
@@ -12,7 +12,11 @@ import sevdotdev.dao.stats.StatsTable
 import sevdotdev.dto.PlayerInMatchDto
 import sevdotdev.model.Match
 import sevdotdev.model.Player
+import sevdotdev.model.Stats
+import sevdotdev.model.combineStats
 import java.util.UUID
+import java.util.logging.Level
+import java.util.logging.Logger
 
 class StatShotDataRepository(
     val matchDao: MatchDao,
@@ -42,29 +46,50 @@ class StatShotDataRepository(
             }
 
         }
-        return  true
+        return true
     }
 
-    fun readMatches(): List<Match> {
-        val matches = matchDao.getAll().map { match ->
-            val players = mutableListOf<Player>()
-            val id = match.id
-            id?.let {
-                val playersInMatch = playerInMatchDao.getByMatchId(id)
-                playersInMatch.forEach { pIM ->
-                    val stats = statsDao.query {
-                        StatsTable.select {
-                            (StatsTable.playerId eq pIM.playerId) and (StatsTable.matchId eq pIM.matchId)
-                        }.map {
-                            statsDao.rowToObject(it)
-                        }.singleOrNull()
-                    }
-                    val playerToAdd = playerDao.get(pIM.playerId!!)?.copy(stats = stats, team = pIM.team)
-                    playerToAdd?.let { players.add(playerToAdd) }
-                }
-            }
-            match.copy(players = players)
+    fun readAllMatches(): List<Match> {
+        return matchDao.getAll().map {
+            fillMatchDetails(it)
         }
-        return matches
+    }
+
+    fun readMatchesByPlayer(playerId: String): List<Match> {
+        val matchIds = playerInMatchDao.getByPlayerId(playerId)
+        return try {
+            matchIds.map {
+                val match = matchDao.get(it.matchId!!)
+                fillMatchDetails(match!!)
+            }
+
+        } catch (e: java.lang.NullPointerException) {
+            Logger.getGlobal().log(Level.WARNING, e.message)
+            emptyList()
+        }
+    }
+
+    private fun fillMatchDetails(match: Match): Match {
+        val players = mutableListOf<Player>()
+        val id = match.id
+        id?.let {
+            val playersInMatch = playerInMatchDao.getByMatchId(id)
+            playersInMatch.forEach { pIM ->
+                val stats = statsDao.query {
+                    StatsTable.select {
+                        (StatsTable.playerId eq pIM.playerId) and (StatsTable.matchId eq pIM.matchId)
+                    }.map {
+                        statsDao.rowToObject(it)
+                    }.singleOrNull()
+                }
+                val playerToAdd = playerDao.get(pIM.playerId!!)?.copy(stats = stats, team = pIM.team)
+                playerToAdd?.let { players.add(playerToAdd) }
+            }
+        }
+        return match.copy(players = players)
+    }
+
+    fun getPlayerStatsById(playerId: String): Stats {
+        return statsDao.getStatsByPlayer(playerId).combineStats()
     }
 }

@@ -58,3 +58,15 @@ data class Stats(
         return this.copy(playerId = playerId, matchId = matchId)
     }
 }
+
+fun List<Stats>.combineStats(): Stats =
+    Stats(
+        goals = sumOf { it.goals },
+        assists = sumOf { it.assists },
+        saves = sumOf { it.saves },
+        blocks = sumOf { it.blocks },
+        passes = sumOf { it.passes },
+        possessionTimeSec = sumOf { it.possessionTimeSec },
+        primaryAssists = sumOf { it.primaryAssists },
+        score = sumOf { it.score }
+    )

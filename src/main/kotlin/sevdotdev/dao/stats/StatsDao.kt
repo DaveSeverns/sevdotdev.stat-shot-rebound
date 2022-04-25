@@ -123,4 +123,12 @@ class StatsDao(database: Database) : ExposedDao<Stats, UUID, StatsTable>(databas
     fun query(transaction: () -> Stats?): Stats? = transaction(database) {
         transaction.invoke()
     }
+
+    fun getStatsByPlayer(playerId: String): List<Stats> = transaction(database){
+        table.select {
+            table.playerId eq playerId
+        }.map {
+            rowToObject(it)
+        }
+    }
 }
