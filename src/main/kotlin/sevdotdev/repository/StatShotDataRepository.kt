@@ -2,7 +2,7 @@ package sevdotdev.repository
 
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
-import sevdotdev.dao.anyAs
+import sevdotdev.dao.asOrNull
 import sevdotdev.dao.matches.MatchDao
 import sevdotdev.dao.matches.PlayerInMatchDao
 import sevdotdev.dao.players.PlayerTableDao
@@ -33,7 +33,7 @@ class StatShotDataRepository(
 
     fun saveMatches(matches: List<Match>): Boolean {
         matches.forEach { match ->
-            val matchId = matchDao.create(match).anyAs<UUID>()
+            val matchId = matchDao.create(match).asOrNull<UUID>()
             matchId?.let { idOfMatch ->
                 match.players?.forEach { player ->
                     player?.let {
