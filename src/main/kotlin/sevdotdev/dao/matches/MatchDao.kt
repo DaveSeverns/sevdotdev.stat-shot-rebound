@@ -26,6 +26,7 @@ class MatchDao(
             it[customMercyRule] = entity.customMercyRule
             it[periodsEnabled] = entity.periodsEnabled
             it[type] = entity.type
+            it[timestamp] = entity.timestamp
         }
         resultMatchId.value
     }
@@ -59,7 +60,8 @@ class MatchDao(
             type = row[table.type],
             periodsEnabled = row[table.periodsEnabled],
             players = emptyList(),
-            id = row[table.id].value
+            id = row[table.id].value,
+            timestamp = row[table.timestamp]
         )
     }
 

@@ -2,6 +2,7 @@ package sevdotdev.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.sql.Timestamp
 import java.util.*
 
 data class Match(
@@ -21,5 +22,7 @@ data class Match(
     @SerializedName("type")
     val type: String?,
     @SerializedName("winner")
-    val winner: String?
+    val winner: String?,
+    @SerializedName("timestamp")
+    val timestamp: Long? = null,
 )

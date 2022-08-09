@@ -1,13 +1,10 @@
 package sevdotdev.diskutils
 
 import com.google.gson.Gson
-import io.ktor.application.*
-import org.h2.engine.Database
-import sevdotdev.dao.stats.StatsDao
+import io.ktor.application.Application
 import sevdotdev.model.Match
 import sevdotdev.repository.StatShotDataRepository
 import java.io.File
-import java.util.*
 
 fun Application.readFromDisk(directoryPath: String, repository: StatShotDataRepository) {
     val games = mutableListOf<Match>()
@@ -24,7 +21,7 @@ fun Application.readFromDisk(directoryPath: String, repository: StatShotDataRepo
                 null
             }
             gameToAdd?.let {
-                games.add(gameToAdd)
+                games.add(gameToAdd.copy(timestamp = file.lastModified()))
             }
             println(file)
         }
